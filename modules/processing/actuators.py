@@ -4,42 +4,48 @@ import mosquitto
 import json
 import time
 
-def switch_HallLight(intent, data = None):
+def switch(dev, intent, data = None):
+	print dev
 	if intent == "on":
-		time.sleep(1)
-		mqttc.publish("433mhz/send", "switch_HallLight_on")
+		print  "switch_"+ dev +"_on"
+		mqttc.publish("433mhz/send", "switch_"+ str(dev) +"_on" )
 	if intent == "off":
-		print "Turning to the off"
+		mqttc.publish("433mhz/send", "switch_"+ str(dev) +"_off" )
 
 actuator = {
-        "switch_HallLight" : switch_HallLight,
+        "switch" : switch,
 }
 
 def on_connect(rc):
 	print "Connected to MQTT"
 
+#runs when a MQTT message arrives
 def on_message(msg):
+	#unpack json payload
 	inbound = json.loads(msg.payload)
-	dev = inbound[0]
-	intent = inbound[1]
+	
+	#this is the device we are working with...
+	cat = inbound[0]
+	dev = inbound[1]
+	#....and what we want to do with it
+	intent = inbound[2]
+	#some things need extra info
 	data = None
 	try:
-		data = inbound[2]
+		data = inbound[3]
 	except IndexError:
 		pass
-	actuator[dev](intent, data)
+	#use the lookup table to run the command for the device
+	actuator[cat](dev, intent, data)
 
-
-
+#start up the MQTT connection
 mqttc = mosquitto.Mosquitto("actuators")
-
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
-
 mqttc.connect("127.0.0.1", 1883, 60, False)
-
 mqttc.subscribe("actuators", 0)
 
+#infinite loop until the MQTT connection dies
 while mqttc.loop() == 0:
 	pass
 

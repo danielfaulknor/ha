@@ -2,8 +2,7 @@
 
 import mosquitto
 import serial
-
-hr_433mhz = { "switch_HallLight_on" : "A9A31C" }
+from codes import s_433mhz
 
 def hextobin(hexval):
         thelen = len(hexval)*4
@@ -16,7 +15,8 @@ def on_connect(rc):
 	print "Connected 433mhz -> MQTT"
 
 def on_message(msg):
-	payload = hr_433mhz[msg.payload]
+	print "Payload: " + msg.payload
+	payload = s_433mhz[msg.payload]
 	print "Sending " + payload
 	ser = serial.Serial("/dev/ttyO1", 9600)  #open serial port
 	print '{"DEVICE":[{"G":"0","V":0,"D":11,"DA":"' + hextobin(payload) + '"}]}'

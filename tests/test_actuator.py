@@ -2,6 +2,7 @@
 import mosquitto
 import os
 import json
+import time
 
 serialdev = '/dev/ttyO1'
 broker = "127.0.0.1"
@@ -35,5 +36,14 @@ mqttc.on_publish = on_publish
 mqttc.connect(broker, port, 60, True)
 
 while mqttc.loop() == 0:
-	mqttc.publish("actuators", json.dumps(["switch_HallLight", "on"]))
+	mqttc.publish("actuators", json.dumps(["switch", "WalkwayLight", "on"]))
+	time.sleep(0.5)
+	mqttc.publish("actuators", json.dumps(["switch", "WalkwayLight", "off"]))	
+	time.sleep(0.5)
+	mqttc.publish("actuators", json.dumps(["switch", "WalkwayLight", "on"]))
+	time.sleep(0.5)
+	mqttc.publish("actuators", json.dumps(["switch", "WalkwayLight", "off"]))	
+	time.sleep(0.5)
+
+	break
 	pass 
