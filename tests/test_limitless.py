@@ -36,14 +36,13 @@ mqttc.on_publish = on_publish
 mqttc.connect(broker, port, 60, True)
 
 while mqttc.loop() == 0:
-	mqttc.publish("actuators", json.dumps(["switch", "WalkwayLight", "on"]))
+	mqttc.publish("limitless", json.dumps(["Lounge Main", "off"]))
 	time.sleep(0.5)
-	mqttc.publish("actuators", json.dumps(["switch", "WalkwayLight", "off"]))	
+	mqttc.publish("limitless", json.dumps(["Lounge Main", "on"]))
 	time.sleep(0.5)
-	mqttc.publish("actuators", json.dumps(["switch", "WalkwayLight", "on"]))
+	mqttc.publish("limitless", json.dumps(["Lounge Main", "off"]))
 	time.sleep(0.5)
-	mqttc.publish("actuators", json.dumps(["switch", "WalkwayLight", "off"]))	
+	mqttc.publish("limitless", json.dumps(["Lounge Main", "on"]))
 	time.sleep(0.5)
-
 	break
 	pass 

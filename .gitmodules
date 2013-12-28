@@ -1,0 +1,3 @@
+[submodule "modules/limitlessLED"]
+	path = modules/limitlessLED
+	url = https://github.com/danielfaulknor/limitless-php.git

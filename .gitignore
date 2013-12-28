@@ -1,8 +1,6 @@
 # Specific stuff
-modules/processing/test_*.py
 modules/processing/codes.py
 modules/433mhz/codes.py
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
