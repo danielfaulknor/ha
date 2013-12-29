@@ -5,7 +5,7 @@ import os
 import time
 import calendar
 import json
-import ConfigParser
+import codes
 
 serialdev = '/dev/ttyO1'
 broker = "127.0.0.1"
@@ -82,7 +82,7 @@ def main():
                 		try:
 					device_id[data['DEVICE'][0]['D']]()
         	        		if data['DEVICE'][0]['D'] == 11:
-						result = hex(int(data['DEVICE'][0]['DA'],2))
+						result = codes.rfm_sensors[hex(int(data['DEVICE'][0]['DA'],2))]
 						json_data = json.dumps(["433mhz", result]) 
 						if gap < 10:
 							if line == lastline:
@@ -90,7 +90,9 @@ def main():
 							else:
 								mqttc.publish("sensors", json_data)
 								lastpublish =  calendar.timegm(time.gmtime())
+								print hex(int(data['DEVICE'][0]['DA'],2))
 						else:
+							print hex(int(data['DEVICE'][0]['DA'],2))
 							mqttc.publish("sensors", json_data)
 							lastpublish =  calendar.timegm(time.gmtime())
 						lastline = line

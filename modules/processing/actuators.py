@@ -4,6 +4,8 @@ import mosquitto
 import json
 import time
 
+mqttc = mosquitto.Mosquitto("actuators")
+
 def switch(dev, intent, data = None):
 	print dev
 	if intent == "on":
@@ -11,6 +13,10 @@ def switch(dev, intent, data = None):
 		mqttc.publish("433mhz/send", "switch_"+ str(dev) +"_on" )
 	if intent == "off":
 		mqttc.publish("433mhz/send", "switch_"+ str(dev) +"_off" )
+
+actuator = {
+	"switch" : switch,
+	}
 
 def on_connect(rc):
 	print "ACTUARTORS Connected to MQTT"
@@ -37,14 +43,8 @@ def on_message(msg):
 def main():
 
 	try:	
-		actuator = {
-        		"switch" : switch,
-		}
-
-
 		print "actuators"
 		#start up the MQTT connection
-		mqttc = mosquitto.Mosquitto("actuators")
 		mqttc.on_message = on_message
 		mqttc.on_connect = on_connect
 		mqttc.connect("127.0.0.1", 1883, 60, False)

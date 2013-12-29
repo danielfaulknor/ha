@@ -3,7 +3,18 @@
 import mosquitto
 import json
 import time
-import codes
+
+mqttc = mosquitto.Mosquitto("sensors")
+
+def sensors_LaundryDoor():
+       	print "Laundry Door Opened"
+        mqttc.publish("actuators", json.dumps(["switch", "HallLight", "on"]))
+
+
+sensors = {
+       	"LaundryDoor" : sensors_LaundryDoor,
+}
+
 
 def on_connect(rc):
 	print "SENSORS Connected to MQTT"
@@ -14,18 +25,14 @@ def on_message(msg):
 	content = inbound[1]
 
 	if str(medium) == "433mhz":
-		try:
-			codes.rf_433mhz[str(content)]()
-		except:
-			print "Sorry code " + content + " is not setup"
+		print str(content)
+		sensors[str(content)]()
 	else:
 		print "Medium " + medium + " not implemented!"
 
 
 def main():
-
 	try:
-		mqttc = mosquitto.Mosquitto("sensors")
 
 		mqttc.on_message = on_message
 		mqttc.on_connect = on_connect

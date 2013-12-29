@@ -4,6 +4,7 @@ import sys
 import time
 from multiprocessing import Process
 
+
 def main():
 	jobs = []
 	for root, dirs, files in os.walk('modules'):
@@ -20,12 +21,13 @@ def main():
 	print jobs
 
 	def signal_handler(signal, frame):
-        	print "Got CTL+C"
-	        for job in jobs:
-        	        job.terminate()
-        	        job.join()
-		time.sleep(1)
+       		print "Got CTL+C"
+       		for job in jobs:
+       	        	job.terminate()
+	       	        job.join()
 	        sys.exit(0)
+
+
 
 	signal.signal(signal.SIGINT, signal_handler)
 

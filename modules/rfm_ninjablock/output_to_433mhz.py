@@ -2,7 +2,7 @@
 
 import mosquitto
 import serial
-from codes import s_433mhz
+from codes import rfm_actuators
 
 def hextobin(hexval):
         thelen = len(hexval)*4
@@ -16,22 +16,23 @@ def on_connect(rc):
 
 def on_message(msg):
 	print "Payload: " + msg.payload
-	payload = s_433mhz[msg.payload]
+	payload = rfm_actuators[msg.payload]
 	print "Sending " + payload
 	ser = serial.Serial("/dev/ttyO1", 9600)  #open serial port
 	print '{"DEVICE":[{"G":"0","V":0,"D":11,"DA":"' + hextobin(payload) + '"}]}'
 	ser.write('{"DEVICE":[{"G":"0","V":0,"D":11,"DA":"' + hextobin(payload) + '"}]}')
 	ser.close()
 
-mqttc = mosquitto.Mosquitto("2_433mhz")
+def main():
+	mqttc = mosquitto.Mosquitto("2_433mhz")
 
-mqttc.on_message = on_message
-mqttc.on_connect = on_connect
+	mqttc.on_message = on_message
+	mqttc.on_connect = on_connect
+	
+	mqttc.connect("127.0.0.1", 1883, 60, True)
 
-mqttc.connect("127.0.0.1", 1883, 60, True)
+	mqttc.subscribe("433mhz/send", 2)
 
-mqttc.subscribe("433mhz/send", 2)
-
-while mqttc.loop() == 0:
-	pass
+	while mqttc.loop() == 0:
+		pass
 
