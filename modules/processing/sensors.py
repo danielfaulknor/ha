@@ -6,7 +6,7 @@ import time
 import codes
 
 def on_connect(rc):
-	print "Connected to MQTT"
+	print "SENSORS Connected to MQTT"
 
 def on_message(msg):
 	inbound = json.loads(msg.payload)
@@ -21,15 +21,20 @@ def on_message(msg):
 	else:
 		print "Medium " + medium + " not implemented!"
 
-mqttc = mosquitto.Mosquitto("sensors")
 
-mqttc.on_message = on_message
-mqttc.on_connect = on_connect
+def main():
 
-mqttc.connect("127.0.0.1", 1883, 60, False)
+	try:
+		mqttc = mosquitto.Mosquitto("sensors")
 
-mqttc.subscribe("sensors", 0)
+		mqttc.on_message = on_message
+		mqttc.on_connect = on_connect
+	
+		mqttc.connect("127.0.0.1", 1883, 60, False)
 
-while mqttc.loop() == 0:
-	pass
+		mqttc.subscribe("sensors", 0)
 
+		while mqttc.loop() == 0:
+			pass
+	except KeyboardInterrupt:
+		pass

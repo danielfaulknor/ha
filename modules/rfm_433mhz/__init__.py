@@ -3,4 +3,8 @@
 import input_to_mqtt
 
 def main():
-    input_to_mqtt.main()
+	try:
+		input_to_mqtt.main()
+	except KeyboardInterrupt:
+		pass 	
+	#output_to_433mhz.main()

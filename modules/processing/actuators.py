@@ -12,12 +12,8 @@ def switch(dev, intent, data = None):
 	if intent == "off":
 		mqttc.publish("433mhz/send", "switch_"+ str(dev) +"_off" )
 
-actuator = {
-        "switch" : switch,
-}
-
 def on_connect(rc):
-	print "Connected to MQTT"
+	print "ACTUARTORS Connected to MQTT"
 
 #runs when a MQTT message arrives
 def on_message(msg):
@@ -38,14 +34,24 @@ def on_message(msg):
 	#use the lookup table to run the command for the device
 	actuator[cat](dev, intent, data)
 
-#start up the MQTT connection
-mqttc = mosquitto.Mosquitto("actuators")
-mqttc.on_message = on_message
-mqttc.on_connect = on_connect
-mqttc.connect("127.0.0.1", 1883, 60, False)
-mqttc.subscribe("actuators", 0)
+def main():
 
-#infinite loop until the MQTT connection dies
-while mqttc.loop() == 0:
-	pass
+	try:	
+		actuator = {
+        		"switch" : switch,
+		}
 
+
+		print "actuators"
+		#start up the MQTT connection
+		mqttc = mosquitto.Mosquitto("actuators")
+		mqttc.on_message = on_message
+		mqttc.on_connect = on_connect
+		mqttc.connect("127.0.0.1", 1883, 60, False)
+		mqttc.subscribe("actuators", 0)
+
+		#infinite loop until the MQTT connection dies
+		while mqttc.loop() == 0:
+			pass
+	except KeyboardInterrupt:
+		pass

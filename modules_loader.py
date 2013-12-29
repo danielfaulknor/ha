@@ -1,6 +1,7 @@
 import os
 import signal
 import sys
+import time
 from multiprocessing import Process
 
 def main():
@@ -23,6 +24,7 @@ def main():
 	        for job in jobs:
         	        job.terminate()
         	        job.join()
+		time.sleep(1)
 	        sys.exit(0)
 
 	signal.signal(signal.SIGINT, signal_handler)
